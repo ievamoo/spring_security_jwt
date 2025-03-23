@@ -1,4 +1,4 @@
-package com.example.demo.security.auth;
+package com.example.demo.auth;
 
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
