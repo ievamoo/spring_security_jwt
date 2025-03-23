@@ -1,4 +1,4 @@
-package com.example.demo.utils;
+package com.example.demo.security.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -152,8 +152,8 @@ public class JwtUtil {
      */
     public List<GrantedAuthority> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
-        List<String> roles = claims.get("roles", List.class);
-        return roles.stream()
+        List<String> roleNames = claims.get("roles", List.class);
+        return roleNames.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }

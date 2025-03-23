@@ -1,9 +1,8 @@
-package com.example.demo.utils;
+package com.example.demo.security.auth;
 
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;

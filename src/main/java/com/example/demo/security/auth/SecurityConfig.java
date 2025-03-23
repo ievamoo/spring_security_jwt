@@ -1,5 +1,6 @@
-package com.example.demo.utils;
+package com.example.demo.security.auth;
 
+import com.example.demo.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -61,6 +62,8 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/h2-console/**", "/api/public/**", "/error").permitAll()
+                .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
+                .requestMatchers("/user/**").hasAuthority(Role.USER.name())
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

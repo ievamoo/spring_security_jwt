@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +20,15 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         User admin = new User();
-        admin.setUsername("admin");
-        admin.setPassword(passwordEncoder.encode("admin"));
-        admin.setRoles(List.of("ADMIN", "USER"));
+        admin.setUsername(Role.ADMIN.name());
+        admin.setPassword(passwordEncoder.encode(Role.ADMIN.name()));
+        admin.setRoles(List.of(Role.ADMIN, Role.USER));
         userRepository.save(admin);
 
         User user = new User();
-        user.setUsername("user");
-        user.setPassword(passwordEncoder.encode("user"));
-        user.setRoles(List.of("USER"));
+        user.setUsername(Role.USER.name());
+        user.setPassword(passwordEncoder.encode(Role.USER.name()));
+        user.setRoles(List.of(Role.USER));
         userRepository.save(user);
     }
 }
