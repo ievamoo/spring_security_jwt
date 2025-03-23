@@ -21,7 +21,7 @@ public class DataInitializer implements CommandLineRunner {
         User admin = new User();
         admin.setUsername("admin");
         admin.setPassword(passwordEncoder.encode("admin"));
-        admin.setRoles(List.of("ADMIN", "USER", "MODERATOR"));
+        admin.setRoles(List.of("ADMIN", "USER"));
         userRepository.save(admin);
 
         User user = new User();
@@ -29,12 +29,5 @@ public class DataInitializer implements CommandLineRunner {
         user.setPassword(passwordEncoder.encode("user"));
         user.setRoles(List.of("USER"));
         userRepository.save(user);
-
-        User moderator = new User();
-        moderator.setUsername("moderator");
-        moderator.setPassword(passwordEncoder.encode("moderator"));
-        moderator.setRoles(List.of("USER", "MODERATOR"));
-        userRepository.save(moderator);
-
     }
 }

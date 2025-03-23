@@ -1,13 +1,10 @@
 package com.example.demo.controller;
-
 import com.example.demo.dto.RequestDto;
 import com.example.demo.dto.ResponseDto;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -38,8 +35,9 @@ public class testController {
 
     @PostMapping("/admin")
     public ResponseEntity<ResponseDto> addRoleToUser(@RequestBody RequestDto request) {
-
         var roles = userService.addUserRole(request);
         return  ResponseEntity.ok(roles);
     }
+
+
 }
