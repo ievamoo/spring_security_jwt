@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Brake Pads",
+    "price": 49.99,
+    "stock": 100,
+    "supplier": {
+      "id": 1
+    }
+  },
+  {
+    "name": "Oil Filter",
+    "price": 19.99,
+    "stock": 150,
+    "supplier": {
+      "id": 1
+    }
+  },
+  {
+    "name": "Spark Plug",
+    "price": 9.99,
+    "stock": 300,
+    "supplier": {
+      "id": 2
+    }
+  },
+  {
+    "name": "Air Filter",
+    "price": 24.99,
+    "stock": 120,
+    "supplier": {
+      "id": 2
+    }
+  },
+  {
+    "name": "Battery",
+    "price": 119.99,
+    "stock": 40,
+    "supplier": {
+      "id": 3
+    }
+  }
+]

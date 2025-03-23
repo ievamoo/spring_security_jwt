@@ -2,7 +2,7 @@
 //
 //import com.example.demo.dto.RequestDto;
 //import com.example.demo.dto.ResponseDto;
-//import com.example.demo.model.Role;
+//import com.example.demo.security.Role;
 //import com.example.demo.repository.UserRepository;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.security.core.userdetails.UsernameNotFoundException;

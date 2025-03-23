@@ -1,5 +1,6 @@
-package com.example.demo.auth;
+package com.example.demo.controller;
 
+import com.example.demo.security.JwtUtil;
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,7 @@ public class AuthController {
 
             // If authentication is successful, load user details and generate token
             final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
+            System.out.println(userDetails);
             final String jwt = jwtUtil.generateToken(userDetails);
 
             return ResponseEntity.ok(new AuthResponse(jwt));

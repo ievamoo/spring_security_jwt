@@ -1,7 +1,4 @@
-package com.example.demo.model;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+package com.example.demo.security;
 
 /**
  * Enum representing user roles in the application.

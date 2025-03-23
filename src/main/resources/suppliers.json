@@ -1,0 +1,29 @@
+[
+  {
+    "name": "AutoMaster Ltd.",
+    "email": "contact@automaster.com",
+    "address": {
+      "street": "Engine Street 5",
+      "city": "Detroit",
+      "country": "USA"
+    }
+  },
+  {
+    "name": "SpeedParts Co.",
+    "email": "support@speedparts.co.uk",
+    "address": {
+      "street": "Turbo Road 21",
+      "city": "London",
+      "country": "UK"
+    }
+  },
+  {
+    "name": "EuroAuto Supplies",
+    "email": "info@euroauto.eu",
+    "address": {
+      "street": "AutoBahn 88",
+      "city": "Berlin",
+      "country": "Germany"
+    }
+  }
+]
