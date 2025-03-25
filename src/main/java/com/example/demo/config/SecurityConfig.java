@@ -1,7 +1,8 @@
 package com.example.demo.config;
 
+import com.example.demo.model.Role;
 import com.example.demo.security.JwtRequestFilter;
-import com.example.demo.security.Role;
+import com.example.demo.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,12 +10,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -26,31 +27,37 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 /**
- * Spring Security Configuration class that sets up:
- * 1. Security filter chain with JWT authentication
- * 2. CORS configuration
- * 3. Authentication provider
- * 4. Password encoder
- * 5. Authentication manager
- * 
- * This configuration enables stateless JWT-based authentication and configures
- * which endpoints require authentication and which are publicly accessible.
+ * Security configuration class that provides comprehensive security setup for the application.
+ * This configuration includes:
+ * - JWT-based authentication
+ * - Role-based authorization
+ * - CORS configuration for Angular frontend
+ * - Stateless session management
+ * - Password encryption
+ * - User details service integration
+ *
+ * The security is configured to protect all endpoints except those explicitly marked as public
+ * (/api/auth/**, /api/public/**). Different levels of access are provided for admin and user roles.
  */
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserDetailsService userDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
+    private final CustomUserDetailsService customUserDetailsService;
 
     /**
-     * Configures the security filter chain with:
-     * - CORS support
-     * - CSRF protection disabled (for JWT)
-     * - Public endpoints (login, h2-console, etc.)
-     * - JWT authentication filter
+     * Configures the security filter chain with comprehensive security settings.
+     * Configuration includes:
+     * - CORS configuration for Angular frontend
+     * - CSRF disabled for JWT-based authentication
+     * - Public endpoints (/api/auth/**, /api/public/**)
+     * - Role-based access control (ADMIN and USER roles)
      * - Stateless session management
+     * - JWT authentication filter
+     * - Frame options for H2 console access
      *
      * @param http HttpSecurity object to configure
      * @return Configured SecurityFilterChain
@@ -62,9 +69,9 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/h2-console/**", "/api/public/**", "/error").permitAll()
-                .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
-                .requestMatchers("/user/**").hasAuthority(Role.USER.name())
+                    .requestMatchers("/api/login", "/api/register", "/error", "/h2-console/**").permitAll()
+                .requestMatchers("/api/admin/**").hasAuthority(Role.ADMIN.name())
+                .requestMatchers("/api/user/**").hasAuthority(Role.USER.name())
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
@@ -80,25 +87,26 @@ public class SecurityConfig {
     }
 
     /**
-     * Creates and configures the authentication provider.
-     * Sets up the user details service and password encoder.
+     * Configures the authentication provider with custom UserDetailsService and password encoder.
+     * This provider handles the authentication process using database-stored credentials.
      *
-     * @return Configured AuthenticationProvider
+     * @return Configured DaoAuthenticationProvider
      */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setUserDetailsService(customUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
 
     /**
-     * Creates the authentication manager for handling authentication requests.
+     * Creates the authentication manager bean used for authenticating users.
+     * This manager is used by the authentication endpoints to process login attempts.
      *
-     * @param config AuthenticationConfiguration to get the authentication manager
-     * @return AuthenticationManager instance
-     * @throws Exception if authentication manager creation fails
+     * @param config AuthenticationConfiguration to create the manager
+     * @return Configured AuthenticationManager
+     * @throws Exception if manager creation fails
      */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -106,8 +114,12 @@ public class SecurityConfig {
     }
 
     /**
-     * Configures CORS settings for the application.
-     * Allows requests from the Angular frontend (http://localhost:4200).
+     * Configures CORS settings to allow cross-origin requests from the Angular frontend.
+     * Settings include:
+     * - Allowed origin: http://localhost:4200
+     * - Allowed methods: GET, POST, PUT, DELETE, OPTIONS
+     * - Allowed headers: Authorization, Content-Type, X-Requested-With
+     * - Credentials allowed
      *
      * @return Configured CorsConfigurationSource
      */
@@ -125,13 +137,14 @@ public class SecurityConfig {
     }
 
     /**
-     * Creates the password encoder for hashing passwords.
-     * Uses BCrypt with default strength.
+     * Creates a BCrypt password encoder for secure password hashing.
+     * Used for both encoding new passwords and matching existing ones.
      *
-     * @return PasswordEncoder instance
+     * @return BCryptPasswordEncoder instance
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

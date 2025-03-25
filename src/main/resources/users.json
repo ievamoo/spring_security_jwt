@@ -4,31 +4,31 @@
     "lastName": "Anderson",
     "email": "alice.admin@example.com",
     "username": "admin",
-    "password": "admin123",
+    "password": "admin",
     "roles": ["ADMIN", "USER"]
   },
   {
     "firstName": "Bob",
     "lastName": "Brown",
     "email": "bob.brown@example.com",
-    "username": "bobbyB",
-    "password": "password1",
+    "username": "bob",
+    "password": "bob123",
     "roles": ["USER"]
   },
   {
     "firstName": "Carol",
     "lastName": "Clark",
     "email": "carol.clark@example.com",
-    "username": "carol123",
-    "password": "password2",
+    "username": "carol",
+    "password": "carol123",
     "roles": ["USER"]
   },
   {
     "firstName": "Dave",
     "lastName": "Davis",
     "email": "dave.davis@example.com",
-    "username": "dave123",
-    "password": "password3",
+    "username": "dave",
+    "password": "dave123",
     "roles": ["USER"]
   }
 ]

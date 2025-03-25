@@ -1,67 +1,78 @@
 package com.example.demo.controller;
 
-import com.example.demo.security.JwtUtil;
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
+import com.example.demo.dto.AuthRequestDto;
+import com.example.demo.dto.AuthResponseDto;
+import com.example.demo.dto.RegisterRequestDto;
+import com.example.demo.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * REST Controller for handling authentication-related endpoints.
  * This controller provides endpoints for:
- * 1. User authentication
- * 2. JWT token generation
- * 
+ * 1. User authentication and login
+ * 2. New user registration
+ * 3. JWT token generation for both login and registration
+ *
  * The controller is configured to accept requests from the Angular frontend
- * running on http://localhost:4200.
+ * running on http://localhost:4200 and provides stateless authentication
+ * using JWT tokens.
+ *
+ * Base path: /api
+ * Available endpoints:
+ * - POST /login - User authentication
+ * - POST /register - New user registration
  */
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
-    private final JwtUtil jwtUtil;
+    private final AuthService authService;
 
     /**
      * Authenticates a user and generates a JWT token upon successful authentication.
-     * This endpoint:
-     * 1. Validates the user credentials
-     * 2. Generates a JWT token containing user details and roles
-     * 3. Returns the token in the response
+     * This endpoint validates the provided credentials against the database and,
+     * if valid, generates a JWT token containing the user's details and roles.
      *
-     * @param authRequest Contains username and password for authentication
+     * @param authRequest DTO containing username and password for authentication
      * @return ResponseEntity containing:
-     *         - JWT token on successful authentication
-     *         - Error message on authentication failure
+     *         - 200 OK with JWT token on successful authentication
+     *         - 400 Bad Request with error message on invalid credentials
+     *         - 500 Internal Server Error on unexpected errors
      */
     @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthRequest authRequest) {
-        try {
-            // First authenticate the user
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-            );
-
-            // If authentication is successful, load user details and generate token
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
-            System.out.println(userDetails);
-            final String jwt = jwtUtil.generateToken(userDetails);
-
-            return ResponseEntity.ok(new AuthResponse(jwt));
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.badRequest().body("Invalid username or password");
-        } catch (Exception e) {
-            e.printStackTrace(); // Add this for debugging
-            return ResponseEntity.internalServerError().body("Error during authentication: " + e.getMessage());
-        }
+    public ResponseEntity<AuthResponseDto> createAuthenticationToken(@RequestBody AuthRequestDto authRequest) {
+        String jwt = authService.authenticateAndGenerateToken(
+                authRequest.getUsername(), authRequest.getPassword());
+        return ResponseEntity.ok(new AuthResponseDto(jwt));
+    }
+    
+    /**
+     * Registers a new user and generates a JWT token for immediate authentication.
+     * This endpoint:
+     * 1. Validates the registration data (using @Valid)
+     * 2. Creates a new user account
+     * 3. Generates a JWT token for immediate login
+     *
+     * The registration request is validated for:
+     * - Required fields (firstName, lastName, email, username, password)
+     * - Valid email format
+     * - Unique username and email
+     *
+     * @param request DTO containing user registration details
+     * @return ResponseEntity containing:
+     *         - 200 OK with JWT token on successful registration
+     *         - 400 Bad Request with validation errors
+     *         - 500 Internal Server Error on unexpected errors
+     */
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponseDto> registerUser(@Valid @RequestBody RegisterRequestDto request) {
+        String jwt = authService.registerAndGenerateToken(request);
+        return ResponseEntity.ok(new AuthResponseDto(jwt));
     }
 }
 
