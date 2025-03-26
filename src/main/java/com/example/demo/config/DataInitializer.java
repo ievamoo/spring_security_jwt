@@ -1,10 +1,11 @@
 package com.example.demo.config;
 
+
 import com.example.demo.model.CarPart;
 import com.example.demo.model.Supplier;
+import com.example.demo.model.User;
 import com.example.demo.repository.CarPartRepository;
 import com.example.demo.repository.SupplierRepository;
-import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.JsonService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -54,10 +55,9 @@ public class DataInitializer implements CommandLineRunner {
         var users = jsonService
                 .getData("users.json", new TypeReference<List<User>>() {});
 
-        List<User> encodedPassUsers = users.stream()
+        userRepository.saveAll(users.stream()
                 .peek(user -> user.setPassword(passwordEncoder.encode(user.getPassword())))
-                .toList();
-        userRepository.saveAll(encodedPassUsers);
+                .toList());
 
         var suppliers = jsonService
                 .getData("suppliers.json", new TypeReference<List<Supplier>>() {});

@@ -1,20 +1,18 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
 
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
 @DynamicUpdate
+@ToString(exclude = "supplier")
 public class CarPart {
 
     @Id
@@ -34,6 +32,6 @@ public class CarPart {
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
-    @ManyToMany(mappedBy = "carPartList")
-    private List<Order> orders;
+    @OneToMany(mappedBy = "carPart")
+    private List<OrderItem> orderItems;
 }

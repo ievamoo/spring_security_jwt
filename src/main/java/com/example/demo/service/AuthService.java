@@ -1,15 +1,17 @@
 package com.example.demo.service;
 
-
 import com.example.demo.dto.RegisterRequestDto;
+import com.example.demo.exception.RegistrationException;
 import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,9 +50,17 @@ public class AuthService {
      * @throws org.springframework.security.core.AuthenticationException if authentication fails
      */
     public String authenticateAndGenerateToken(String username, String password) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
-        );
+        if (!userRepository.existsByUsername(username)) {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password)
+            );
+        } catch (BadCredentialsException ex) {
+            throw new BadCredentialsException("Invalid username or password");
+        }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return jwtUtil.generateToken(userDetails);
@@ -70,7 +80,10 @@ public class AuthService {
      */
     public String registerAndGenerateToken(RegisterRequestDto request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new RegistrationException("Username already exists");
+        }
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RegistrationException("Email already exists");
         }
 
         User user = User.builder()

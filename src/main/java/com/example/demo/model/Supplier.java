@@ -1,10 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @DynamicUpdate
 @Builder
+@ToString(exclude = "carParts")
 public class Supplier {
 
     @Id
@@ -26,9 +24,10 @@ public class Supplier {
     @Embedded
     private Address address;
 
+    @Column(nullable = false)
     private String email;
 
-    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
     private List<CarPart> carParts;
 
 }

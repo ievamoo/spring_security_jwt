@@ -1,10 +1,16 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.RegisterRequestDto;
 import com.example.demo.dto.UserDto;
+import com.example.demo.exception.RegistrationException;
+import com.example.demo.exception.ResourceAlreadyExistsException;
+import com.example.demo.model.Role;
+import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.utils.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +32,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Retrieves a user by their username and converts it to a DTO.
@@ -55,8 +62,8 @@ public class UserService {
 
     /**
      * Updates the profile information of an existing user.
-     * Only updates the fields that are allowed to be modified through the update operation.
-     * The username cannot be changed through this method.
+     * Only updates firstName, lastName, and email fields.
+     * All other fields (id, username, password, roles) remain unchanged.
      * 
      * @param username the username of the user to update
      * @param updatedUserDto DTO containing the updated user information
@@ -66,7 +73,7 @@ public class UserService {
     public UserDto updateCurrentUser(String username, UserDto updatedUserDto) {
         var matchingUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found:" + username));
-        userMapper.updateUserFromDto(updatedUserDto, matchingUser);
+        userMapper.updateUserProfile(updatedUserDto, matchingUser);
         var savedUser = userRepository.save(matchingUser);
         return userMapper.modelToDto(savedUser);
     }
@@ -78,5 +85,29 @@ public class UserService {
                 .toList();
     }
 
+    public List<UserDto> addUser(RegisterRequestDto newUser) {
+        validateEmailAndUsername(newUser);
+        var user = User.builder()
+                .username(newUser.getUsername())
+                .password(passwordEncoder.encode(newUser.getPassword()))
+                .firstName(newUser.getFirstName())
+                .lastName(newUser.getLastName())
+                .email(newUser.getEmail())
+                .roles(List.of(Role.USER))
+                .build();
+        userRepository.save(user);
+        return userRepository.findAll().stream()
+                .map(userMapper::modelToDto)
+                .toList();
+    }
+
+    private void validateEmailAndUsername(RegisterRequestDto newUser) {
+        if (userRepository.existsByUsername(newUser.getUsername())) {
+            throw new RegistrationException("Username already exists");
+        }
+        if (userRepository.existsByEmail(newUser.getEmail())) {
+            throw new ResourceAlreadyExistsException("Email", newUser.getEmail());
+        }
+    }
 }
 
