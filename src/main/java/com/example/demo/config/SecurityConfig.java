@@ -6,6 +6,7 @@ import com.example.demo.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -35,9 +36,6 @@ import java.util.Arrays;
  * - Stateless session management
  * - Password encryption
  * - User details service integration
- *
- * The security is configured to protect all endpoints except those explicitly marked as public
- * (/api/auth/**, /api/public/**). Different levels of access are provided for admin and user roles.
  */
 @Configuration
 @EnableWebSecurity
@@ -53,7 +51,6 @@ public class SecurityConfig {
      * Configuration includes:
      * - CORS configuration for Angular frontend
      * - CSRF disabled for JWT-based authentication
-     * - Public endpoints (/api/auth/**, /api/public/**)
      * - Role-based access control (ADMIN and USER roles)
      * - Stateless session management
      * - JWT authentication filter
@@ -70,9 +67,13 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/login", "/api/register", "/error", "/h2-console/**").permitAll()
-                .requestMatchers("/api/admin/**").hasAuthority(Role.ADMIN.name())
-                .requestMatchers("/api/user/**").hasAuthority(Role.USER.name())
-                .anyRequest().authenticated()
+                    .requestMatchers(HttpMethod.GET, "/api/carPart/**").hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
+                    .requestMatchers(HttpMethod.POST, "/api/carPart/**").hasAuthority(Role.ADMIN.name())
+                    .requestMatchers(HttpMethod.PUT, "/api/carPart/**").hasAuthority(Role.ADMIN.name())
+                    .requestMatchers(HttpMethod.DELETE, "/api/carPart/**").hasAuthority(Role.ADMIN.name())
+                    .requestMatchers("/api/suppliers/**").hasAuthority(Role.ADMIN.name())
+                    .requestMatchers("/api/user/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                    .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -102,11 +103,10 @@ public class SecurityConfig {
 
     /**
      * Creates the authentication manager bean used for authenticating users.
-     * This manager is used by the authentication endpoints to process login attempts.
      *
-     * @param config AuthenticationConfiguration to create the manager
+     * @param config AuthenticationConfiguration object
      * @return Configured AuthenticationManager
-     * @throws Exception if manager creation fails
+     * @throws Exception if authentication manager configuration fails
      */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -114,12 +114,8 @@ public class SecurityConfig {
     }
 
     /**
-     * Configures CORS settings to allow cross-origin requests from the Angular frontend.
-     * Settings include:
-     * - Allowed origin: http://localhost:4200
-     * - Allowed methods: GET, POST, PUT, DELETE, OPTIONS
-     * - Allowed headers: Authorization, Content-Type, X-Requested-With
-     * - Credentials allowed
+     * Configures CORS settings for the Angular frontend.
+     * Allows requests from the frontend application and specific HTTP methods.
      *
      * @return Configured CorsConfigurationSource
      */
@@ -128,23 +124,21 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
-        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
     /**
-     * Creates a BCrypt password encoder for secure password hashing.
-     * Used for both encoding new passwords and matching existing ones.
+     * Creates the password encoder bean for encrypting passwords.
+     * Uses BCrypt for secure password hashing.
      *
-     * @return BCryptPasswordEncoder instance
+     * @return Configured PasswordEncoder
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

@@ -5,7 +5,7 @@
     "email": "alice.admin@example.com",
     "username": "admin",
     "password": "admin",
-    "roles": ["ADMIN", "USER"]
+    "roles": ["ADMIN"]
   },
   {
     "firstName": "Bob",

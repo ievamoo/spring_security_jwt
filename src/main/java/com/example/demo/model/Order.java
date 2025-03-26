@@ -6,28 +6,31 @@ import lombok.*;
 import java.util.List;
 
 @Entity
+@Table(name = "orders")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name="orders")
 public class Order {
-//TODO ar reikia orderiu isvis mums?
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double totalPrice;
+    private Double total;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> items;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany
-    @JoinTable(
-            name = "order_parts",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "part_id")
-    )
-    private List<CarPart> carPartList;
+
+    public void calculateTotal() {
+        this.total = items.stream()
+                .mapToDouble(item -> item.getQuantity() * item.getCarPart().getPrice())
+                .sum();
+    }
+
 }

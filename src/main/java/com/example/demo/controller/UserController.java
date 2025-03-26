@@ -1,10 +1,14 @@
 package com.example.demo.controller;
+import com.example.demo.dto.RegisterRequestDto;
 import com.example.demo.dto.UserDto;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * REST Controller for handling user-related operations.
@@ -73,6 +77,27 @@ public class UserController {
         var username = authentication.getName();
         var updatedUser = userService.updateCurrentUser(username, updatedUserDto);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    /**
+     * Retrieves all users in the system.
+     * This endpoint is restricted to administrators only.
+     *
+     * @return ResponseEntity containing:
+     *         - 200 OK with List<UserDto> containing all users
+     *         - 403 Forbidden if the user is not an administrator
+     */
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping
+    public ResponseEntity<List<UserDto>> addUser(@RequestBody RegisterRequestDto newUser) {
+        var user = userService.addUser(newUser);
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
 }

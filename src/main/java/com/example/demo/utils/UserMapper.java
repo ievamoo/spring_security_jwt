@@ -10,8 +10,16 @@ public interface UserMapper {
 
     UserDto modelToDto(User user);
 
-    User dtoToModel(UserDto userDto);
-
-    void updateUserFromDto(UserDto dto, @MappingTarget User entity);
-
+    /**
+     * Updates only the profile information (firstName, lastName, email) of a user.
+     * This method preserves all other fields including id, username, password, and roles.
+     *
+     * @param dto DTO containing the updated user information
+     * @param entity The user entity to update
+     */
+    default void updateUserProfile(UserDto dto, @MappingTarget User entity) {
+        entity.setFirstName(dto.getFirstName());
+        entity.setLastName(dto.getLastName());
+        entity.setEmail(dto.getEmail());
+    }
 }
