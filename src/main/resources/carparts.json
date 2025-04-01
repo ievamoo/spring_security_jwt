@@ -2,7 +2,7 @@
   {
     "name": "Brake Pads",
     "price": 49.99,
-    "stock": 100,
+    "stock": 2,
     "supplier": {
       "id": 1
     }
@@ -10,7 +10,7 @@
   {
     "name": "Oil Filter",
     "price": 19.99,
-    "stock": 150,
+    "stock": 1,
     "supplier": {
       "id": 1
     }
@@ -18,7 +18,7 @@
   {
     "name": "Spark Plug",
     "price": 9.99,
-    "stock": 300,
+    "stock": 5,
     "supplier": {
       "id": 2
     }
@@ -26,7 +26,7 @@
   {
     "name": "Air Filter",
     "price": 24.99,
-    "stock": 120,
+    "stock": 4,
     "supplier": {
       "id": 2
     }
@@ -34,9 +34,89 @@
   {
     "name": "Battery",
     "price": 119.99,
-    "stock": 40,
+    "stock": 3,
     "supplier": {
       "id": 3
+    }
+  },
+  {
+    "name": "Alternator",
+    "price": 149.99,
+    "stock": 0,
+    "supplier": {
+      "id": 3
+    }
+  },
+  {
+    "name": "Radiator",
+    "price": 199.99,
+    "stock": 10,
+    "supplier": {
+      "id": 4
+    }
+  },
+  {
+    "name": "Fuel Pump",
+    "price": 89.99,
+    "stock": 0,
+    "supplier": {
+      "id": 4
+    }
+  },
+  {
+    "name": "Timing Belt",
+    "price": 59.99,
+    "stock": 5,
+    "supplier": {
+      "id": 5
+    }
+  },
+  {
+    "name": "Headlight Bulb",
+    "price": 14.99,
+    "stock": 3,
+    "supplier": {
+      "id": 1
+    }
+  },
+  {
+    "name": "Windshield Wipers",
+    "price": 17.99,
+    "stock": 2,
+    "supplier": {
+      "id": 2
+    }
+  },
+  {
+    "name": "Clutch Kit",
+    "price": 229.99,
+    "stock": 1,
+    "supplier": {
+      "id": 5
+    }
+  },
+  {
+    "name": "Muffler",
+    "price": 89.49,
+    "stock": 10,
+    "supplier": {
+      "id": 3
+    }
+  },
+  {
+    "name": "Wheel Bearing",
+    "price": 39.99,
+    "stock": 3,
+    "supplier": {
+      "id": 4
+    }
+  },
+  {
+    "name": "Thermostat",
+    "price": 29.99,
+    "stock": 0,
+    "supplier": {
+      "id": 5
     }
   }
 ]

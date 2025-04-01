@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -33,5 +34,6 @@ public class CarPart {
     private Supplier supplier;
 
     @OneToMany(mappedBy = "carPart")
+    @JsonManagedReference
     private List<OrderItem> orderItems;
 }
