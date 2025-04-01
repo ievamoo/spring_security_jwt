@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,7 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "car_part_id")
+    @JsonBackReference
     private CarPart carPart;
 
     private Integer quantity;

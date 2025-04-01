@@ -28,13 +28,14 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private Long expiration;
 
+
     /**
      * Generates a signing key from the secret string.
      * This key is used for both signing and verifying JWT tokens.
      *
      * @return Key object for JWT signing and verification
      */
-    private final Key getSigningKey() {
+    protected final Key getSigningKey() {
         byte[] keyBytes = secret.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -82,6 +83,7 @@ public class JwtUtil {
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
+                .setAllowedClockSkewSeconds(60)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -120,7 +122,7 @@ public class JwtUtil {
      * @param subject Subject (usually username) of the token
      * @return Generated JWT token string
      */
-    private String createToken(Map<String, Object> claims, String subject) {
+    protected String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)

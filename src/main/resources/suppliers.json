@@ -25,5 +25,23 @@
       "city": "Berlin",
       "country": "Germany"
     }
+  },
+  {
+    "name": "DriveTech Global",
+    "email": "sales@drivetechglobal.com",
+    "address": {
+      "street": "Torque Avenue 17",
+      "city": "Toronto",
+      "country": "Canada"
+    }
+  },
+  {
+    "name": "PartsPro International",
+    "email": "hello@partsproint.com",
+    "address": {
+      "street": "Gearway 42",
+      "city": "Sydney",
+      "country": "Australia"
+    }
   }
 ]

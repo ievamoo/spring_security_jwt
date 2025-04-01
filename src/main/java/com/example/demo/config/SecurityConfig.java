@@ -73,6 +73,8 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.DELETE, "/api/carPart/**").hasAuthority(Role.ADMIN.name())
                     .requestMatchers("/api/suppliers/**").hasAuthority(Role.ADMIN.name())
                     .requestMatchers("/api/user/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                    .requestMatchers(HttpMethod.GET, "/api/orders/**").hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
+                    .requestMatchers(HttpMethod.POST, "/api/orders/**").hasAuthority(Role.USER.name())
                     .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

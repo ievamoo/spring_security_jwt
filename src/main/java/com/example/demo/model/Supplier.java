@@ -27,7 +27,7 @@ public class Supplier {
     @Column(nullable = false)
     private String email;
 
-    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CarPart> carParts;
 
 }

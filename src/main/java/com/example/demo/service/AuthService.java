@@ -106,7 +106,7 @@ public class AuthService {
      * @param username the username to generate token for
      * @return JWT token string
      */
-    private String generateToken(String username) {
+     protected String generateToken(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return jwtUtil.generateToken(userDetails);
     }

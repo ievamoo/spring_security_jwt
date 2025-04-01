@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -161,11 +160,11 @@ public class GlobalExceptionHandler {
      * @param ex The Exception that was thrown
      * @return ResponseEntity with 500 status and error details
      */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGlobalException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(createErrorResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"));
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<Map<String, Object>> handleGlobalException(Exception ex) {
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body(createErrorResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, "Ooops.."));
+//    }
 
     /**
      * Creates a standardized error response map.
@@ -177,7 +176,7 @@ public class GlobalExceptionHandler {
      */
     private Map<String, Object> createErrorResponse(String message, HttpStatus status, String error) {
         Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        response.put("timestamp", LocalDateTime.now().toString());
         response.put("message", message);
         response.put("status", status.value());
         response.put("error", error);
