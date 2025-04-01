@@ -83,8 +83,8 @@ mvn spring:boot run
 ## API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login and get JWT token
+- `POST /api/register` - Register a new user
+- `POST /api/login` - Login and get JWT token
 
 ### Car Parts
 - `GET /api/car-parts` - Get all car parts
