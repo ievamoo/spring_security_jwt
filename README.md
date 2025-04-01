@@ -87,11 +87,11 @@ mvn spring:boot run
 - `POST /api/login` - Login and get JWT token
 
 ### Car Parts
-- `GET /api/car-parts` - Get all car parts
-- `GET /api/car-parts/{id}` - Get car part by ID
-- `POST /api/car-parts` - Create new car part (ADMIN only)
-- `PUT /api/car-parts/{id}` - Update car part (ADMIN only)
-- `DELETE /api/car-parts/{id}` - Delete car part (ADMIN only)
+- `GET /api/carPart` - Get all car parts
+- `GET /api/carPart/{id}` - Get car part by ID
+- `POST /api/carPart` - Create new car part (ADMIN only)
+- `PUT /api/carPart/{id}` - Update car part (ADMIN only)
+- `DELETE /api/carPart/{id}` - Delete car part (ADMIN only)
 
 ### Suppliers
 - `GET /api/suppliers` - Get all suppliers

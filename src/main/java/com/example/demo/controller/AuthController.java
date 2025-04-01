@@ -48,8 +48,6 @@ public class AuthController {
     public ResponseEntity<AuthResponseDto> createAuthenticationToken(@RequestBody AuthRequestDto authRequest) {
         String jwt = authService.authenticateAndGenerateToken(
                 authRequest.getUsername(), authRequest.getPassword());
-    
-
         return ResponseEntity.ok(new AuthResponseDto(jwt));
     }
     
