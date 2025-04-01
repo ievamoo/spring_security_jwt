@@ -48,7 +48,7 @@ public class AuthController {
     public ResponseEntity<AuthResponseDto> createAuthenticationToken(@RequestBody AuthRequestDto authRequest) {
         String jwt = authService.authenticateAndGenerateToken(
                 authRequest.getUsername(), authRequest.getPassword());
-        System.out.println("🔥 JWT from service: " + jwt); // Add this
+    
 
         return ResponseEntity.ok(new AuthResponseDto(jwt));
     }
